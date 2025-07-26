@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * webgl-demo.jsのコードを文字列として保持
  * fetch()を使わず直接埋め込むことで、ローカルファイルでのエラーを回避
+ * 修正点: レスポンシブ対応のため、canvasのリサイズ処理を追加
  */
 const webglDemoCodeString = `// webgl-demo.js
 document.addEventListener('DOMContentLoaded', function() {
@@ -98,9 +99,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const buffers = initBuffers(gl);
     
+    // --- レスポンシブ対応：Canvasリサイズ関数 ---
+    function resizeCanvasToDisplaySize(canvas) {
+        const displayWidth  = canvas.clientWidth;
+        const displayHeight = canvas.clientHeight;
+        if (canvas.width  !== displayWidth || canvas.height !== displayHeight) {
+            canvas.width  = displayWidth;
+            canvas.height = displayHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            return true;
+        }
+        return false;
+    }
+
     let catRotation = 0.0;
     let then = 0;
     function render(now) {
+        // 毎フレーム、表示サイズに合わせてCanvasの描画サイズを調整
+        resizeCanvasToDisplaySize(gl.canvas);
+
         now *= 0.001;
         const deltaTime = now - then;
         then = now;
@@ -313,6 +330,7 @@ function initCollapsibleCode() {
 
 /**
  * インタラクティブな三角形デモを初期化・実行する
+ * 修正点: レスポンシブ対応のため、canvasのリサイズ処理を追加
  */
 function initInteractiveTriangleDemo() {
     // --- HTML要素の取得 ---
@@ -379,12 +397,10 @@ function initInteractiveTriangleDemo() {
         return program;
     }
 
-    // シェーダーを再コンパイルして、変数の場所を再取得する関数
     function compileShaders() {
         const newProgram = initShaderProgram(vsEditor.value, fsEditor.value);
         if (newProgram) {
             shaderProgram = newProgram;
-            // 新しいプログラム内の uniform 変数の場所を取得
             uTransformMatrixLocation = gl.getUniformLocation(shaderProgram, 'uTransformMatrix');
         }
     }
@@ -393,18 +409,31 @@ function initInteractiveTriangleDemo() {
     function initBuffers() {
         positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        const positions = [ 0.0, 0.5, -0.5, -0.5, 0.5, -0.5 ]; // Y軸を中心に調整
+        const positions = [ 0.0, 0.5, -0.5, -0.5, 0.5, -0.5 ];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     }
     
+    // --- レスポンシブ対応：Canvasリサイズ関数 ---
+    function resizeCanvas() {
+        const displayWidth  = canvas.clientWidth;
+        const displayHeight = canvas.clientHeight;
+        if (canvas.width  !== displayWidth || canvas.height !== displayHeight) {
+            canvas.width  = displayWidth;
+            canvas.height = displayHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height); // WebGLのビューポートも更新
+        }
+    }
+
     // --- メインのアニメーションループ ---
     function render(now) {
+        // 毎フレーム、表示サイズに合わせてCanvasの描画サイズを調整
+        resizeCanvas();
+
         now *= 0.001; // 時間を秒に変換
         const deltaTime = now - lastTime;
         lastTime = now;
 
         if (shaderProgram) {
-            // --- 背景色の設定 ---
             const hex = bgColorPicker.value;
             const r = parseInt(hex.substring(1, 3), 16) / 255;
             const g = parseInt(hex.substring(3, 5), 16) / 255;
@@ -412,34 +441,22 @@ function initInteractiveTriangleDemo() {
             gl.clearColor(r, g, b, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
 
-            // --- 行列計算 ---
-            // 1. 状態の更新 (回転角度)
             currentRotationAngle += deltaTime * triangleRotationSpeed;
-
-            // 2. 変換行列の作成
-            const transformMatrix = mat4.create(); // 単位行列を作成
-            // Z軸を中心に回転させる
+            const transformMatrix = mat4.create();
             mat4.rotate(transformMatrix, transformMatrix, currentRotationAngle, [0, 0, 1]); 
-            // X軸とY軸を拡大・縮小させる
             mat4.scale(transformMatrix, transformMatrix, [triangleScale, triangleScale, 1]);
 
-            // --- 描画処理 ---
             gl.useProgram(shaderProgram);
-
-            // 3. 計算した行列をシェーダーに送信
             gl.uniformMatrix4fv(uTransformMatrixLocation, false, transformMatrix);
 
-            // 4. 頂点データをシェーダーに送信
             const vertexPosition = gl.getAttribLocation(shaderProgram, 'aVertexPosition');
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
             gl.vertexAttribPointer(vertexPosition, 2, gl.FLOAT, false, 0, 0);
             gl.enableVertexAttribArray(vertexPosition);
 
-            // 5. 描画命令
             gl.drawArrays(gl.TRIANGLES, 0, 3);
         }
 
-        // 次のフレームを要求
         requestAnimationFrame(render);
     }
 

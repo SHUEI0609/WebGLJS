@@ -363,6 +363,12 @@ footer {
     background-color: #6c757d;
 }
 
+@media (max-width: 500px) {
+    .interactive-demo-container {
+        justify-content: center;
+    }
+}
+
 .code-cell pre .js-keyword { color: #58a6ff; }
 .code-cell pre .js-string { color: #9ecbff; }
 .code-cell pre .js-comment { color: #8b949e; font-style: italic; }

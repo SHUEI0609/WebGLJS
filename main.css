@@ -211,6 +211,8 @@ pre .js-function { color: #6f42c1; } /* 紫 */
     border-color: #ced4da;
 }
 
+/* ▼▼▼【修正点】ここから ▼▼▼ */
+
 /* WebGLデモ & インタラクティブエリア */
 .interactive-demo-container {
     display: flex;
@@ -219,17 +221,31 @@ pre .js-function { color: #6f42c1; } /* 紫 */
     padding: 2rem;
     border-radius: 12px;
     margin: 2rem 0;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* 画面が狭いときに折り返す設定は維持 */
 }
-.editor-pane, .preview-pane { flex: 1; min-width: 300px; }
-.preview-pane { text-align: center; }
+
+.editor-pane, .preview-pane {
+    flex: 1; /* 親要素の幅に対して伸縮 */
+    min-width: 300px; /* ただし、最低でも300pxの幅を確保 */
+    /* このmin-widthにより、親の幅が約632px以下になると折り返されます */
+}
+
+.preview-pane {
+    text-align: center;
+}
+
 .preview-pane canvas {
     border: 1px solid #dee2e6;
     border-radius: 8px;
-    width: 100%;
-    max-width: 400px;
-    height: auto;
+    width: 100%; /* 親要素(.preview-pane)の幅いっぱいに広がる */
+    max-width: 100%; /* max-width: 400px; を削除し、100%に */
+    height: 300px; /* 高さを固定（または height: auto; や aspect-ratio を使用） */
+    display: block; /* 不要な余白を防ぐ */
 }
+
+/* ▲▲▲【修正点】ここまで ▲▲▲ */
+
+
 .code-editor {
     width: 100%;
     background-color: #fff;
@@ -298,7 +314,8 @@ footer {
 
 /* --- 8. レスポンシブ対応 --- */
 @media (max-width: 768px) {
-    main, section { padding: 1.5rem; }
+    main { padding: 1.5rem; }
+	section { padding: 1.5rem; }
     h1 { font-size: 2.2rem; }
     h2 { font-size: 1.7rem; }
     .header-with-image { flex-direction: column; }
@@ -307,6 +324,11 @@ footer {
         align-items: center;
         gap: 0.5rem;
     }
+	/* ▼▼▼【修正点】ここから ▼▼▼ */
+    .interactive-demo-container {
+        padding: 1.5rem;
+    }
+	/* ▲▲▲【修正点】ここまで ▲▲▲ */
 }
 
 /* --- 9. コードセル（エディタ風デザイン） --- */

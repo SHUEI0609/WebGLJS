@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WebGLの体験型学習サイト">
+    <meta name="keywords" content="WebGL, JavaScript, 3D, 学習, インタラクティブ">
+    <meta name="author" content="Shuei">
+    <title>WebGL体験型学習サイト</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#js">JavaScriptとは</a></li>
+                <li><a href="#interactive-example">体験デモ</a></li>
+                <li><a href="#more">発展デモ</a></li>
+                <li><a href="#time">製作時間</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="js">
+            <div class="header-with-image">
+                <h1>JavaScriptとは</h1>
+                <img src="images/js.png" alt="JavaScriptのロゴ" width="200" height="100">
+            </div>
+            <h3>1. はじめに</h3>
+            <p>JavaScriptは、主にWebブラウザ上で実行されるオブジェクト指向のスクリプト言語である。現代のWeb開発において、
+                HTML、CSSと並ぶ中核的な技術の一つとして位置づけられている。HTMLがWebページの構造を定義し、
+                CSSが見た目の装飾を指定するのに対し、JavaScriptはページに動的な振る舞いやユーザーとの対話性（インタラクティビティ）を付与する役割を担う。
+                本サイトでは、JavaScriptの基本的な機能と、Web開発におけるその重要性について概説する。</p>
+            <h3>2. JavaScriptの主な機能</h3>
+            <p>JavaScriptをWebページに適用することにより、静的なドキュメントでは実現不可能な、多岐にわたる動的機能の実装が可能となる。<br>
+            <h4>DOM操作による動的なコンテンツ更新</h4>
+            <p>JavaScriptは、DOM (Document Object Model) と呼ばれる仕組みを介して、HTMLドキュメントの要素をプログラム的に操作できる。これにより、ページ全体を再読み込みすることなく、テキストの書き換え、要素の追加や削除、スタイルの変更などをリアルタイムで行うことが可能である。</p>
+            <h4>ユーザーインタラクションへの応答</h4>
+            <p>ユーザーによるクリック、マウスカーソルの移動、キーボード入力といったアクション（イベント）を検知し、それに応じた処理を実行できる。例えば、ボタンクリックによるメニューの開閉、入力フォームにおけるリアルタイムなバリデーション（入力値検証）などがこれにあたる。</p>
+                
+            <h4>サーバーとの非同期通信 (Ajax)</h4>
+            <p>Ajax (Asynchronous JavaScript + XML) という技術を用いることで、Webページの表示後もサーバーとバックグラウンドでデータ通信を行うことができる。これにより、ページ遷移を伴わずに地図情報を読み込んだり、SNSのタイムラインを更新したりするなど、Webアプリケーションの利便性を飛躍的に向上させる。</p>
+            <h3>3. Web開発におけるJavaScriptの位置づけ</h3>
+            <p>当初、JavaScriptは単純なアニメーションや入力補助といった補助的な役割で用いられることが多かった。しかし、Webアプリケーションの高度化と複雑化に伴い、その重要性は増大している。
+
+                現代のフレームワーク（React, Angular, Vue.jsなど）はJavaScriptを基盤としており、大規模で複雑なユーザーインターフェースの構築を効率化している。また、Node.jsの登場により、JavaScriptはWebブラウザ（クライアントサイド）だけでなく、サーバーサイドの開発言語としても広く利用されるようになった。これにより、フロントエンドからバックエンドまでを一貫した言語で開発する道が開かれ、開発効率と生産性の向上に寄与している。</p>
+            <h3>4. 結論</h3>
+            <p>JavaScriptは、静的な情報表示が中心であったWebページに、アプリケーションのような対話性と動的な機能をもたらした基幹技術である。DOM操作、イベント処理、非同期通信といった機能を活用することで、リッチで応答性の高いユーザーエクスペリエンスを実現する。その役割はフロントエンド開発に留まらず、サーバーサイドにも拡大しており、現代のWebエコシステムにおいて不可欠なプログラミング言語であると言える。</p>   
+        </section>
+
+
+        <section id="interactive-example">
+            <div class="header-with-image">
+                <h1>体験：シェーダーの編集</h1>
+                <img src="images/WebGL.png" alt="WebGLのロゴ">
+            </div>
+            <h3>WebGLで最初の図形を描く</h3>
+            <p>WebGLの描画は「シェーダー」と呼ばれるプログラムが核心を担います。下のコードエディタで**頂点シェーダー**と**フラグメントシェーダー**を直接編集し、右側のプレビューにどう反映されるか試してみましょう。シェーダーはGPU上で直接実行され、高速なグラフィックス描画を可能にします。</p>
+
+            <div class="interactive-demo-container">
+                <div class="editor-pane">
+                    <h4>頂点シェーダー (Vertex Shader)</h4>
+                    <p class="editor-description">各頂点の最終的な画面上の位置 (gl_Position) を計算します。</p>
+                    <textarea id="vs-editor" class="code-editor" rows="10">
+// JavaScriptから頂点の位置(aVertexPosition)を受け取ります
+attribute vec4 aVertexPosition;
+// JavaScriptから変換行列(大きさ、回転)を受け取ります
+uniform mat4 uTransformMatrix;
+
+void main(void) {
+  // 受け取った行列を頂点座標に掛けて、大きさと回転を適用します
+  gl_Position = uTransformMatrix * aVertexPosition;
+}
+                    </textarea>
+
+                    <h4>フラグメントシェーダー (Fragment Shader)</h4>
+                    <p class="editor-description">各ピクセルの色 (gl_FragColor) を決定します。色はRGBA形式（赤, 緑, 青, 透明度）で指定します。</p>
+                    <textarea id="fs-editor" class="code-editor" rows="10">
+// 計算の精度を指定します（おまじないです）
+precision mediump float;
+
+void main(void) {
+  // ピクセルの色を gl_FragColor に設定します
+  // vec4(赤, 緑, 青, 透明度) の順で0.0〜1.0の値を指定します
+  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // 赤色
+}
+                    </textarea>
+                    <div class="button-group">
+                        <button id="update-shader-btn" class="action-button">コードを適用</button>
+                        <button id="reset-shader-btn" class="secondary-button">リセット</button>
+                    </div>
+                </div>
+                <div class="preview-pane">
+                    <h4>プレビュー</h4>
+                    <canvas id="interactive-triangle-canvas" width="400" height="300"></canvas>
+                    <div class="controls">
+                        <div>
+                            <label for="triangle-scale-slider">大きさ</label>
+                            <input type="range" id="triangle-scale-slider" min="0.1" max="1.5" value="1.0" step="0.05">
+                        </div>
+                        <div>
+                            <label for="triangle-rotation-slider">回転速度</label>
+                            <input type="range" id="triangle-rotation-slider" min="-5.0" max="5.0" value="0.0" step="0.1">
+                        </div>
+                        <div>
+                           <label for="bg-color-picker">背景色</label>
+                           <input type="color" id="bg-color-picker" value="#FFFFFF">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <section id="more">
+            <div class="header-with-image">
+                <h1>発展:3Dオブジェクトの操作</h1>
+            </div>
+            <h3>インタラクティブな3D猫</h3>
+            <p>WebGLの真価は3Dオブジェクトの描画にあります。下のデモでは、複数の立方体を組み合わせて作られた猫が回転しています。コントローラーを操作して、アニメーションや見た目をリアルタイムに変更してみましょう。これにより、行列計算やシェーダーへのデータ転送（Uniform変数）が3Dシーンにどう影響するかを直感的に理解できます。</p>
+            
+            <div class="webgl-demo">
+                <div id="webglContainer" style="width: 100%; height: 400px; border: 1px solid #ccc; border-radius: 8px; background: #f0f0f0; position: relative;">
+                    <canvas id="glcanvas" width="800" height="400" style="width: 100%; height: 100%; display: block;"></canvas>
+                </div>
+                <div class="controls-3d">
+                    <div>
+                        <label for="rotation-speed-slider">回転速度</label>
+                        <input type="range" id="rotation-speed-slider" min="0" max="5" value="1" step="0.1">
+                    </div>
+                    <div>
+                        <label for="zoom-slider">ズーム</label>
+                        <input type="range" id="zoom-slider" min="2" max="15" value="6" step="0.5">
+                    </div>
+                    <div>
+                        <label for="cat-color-picker">猫の色</label>
+                        <input type="color" id="cat-color-picker" value="#333333">
+                    </div>
+                </div>
+                <p class="demo-description">コントローラーで3D猫の動きや色を自由自在に操ってみましょう。</p>
+            </div>
+
+            <h3>どのように作られているか？ (コード解説)</h3>
+            <p>この3D猫は、シェーダー、バッファ、そして行列計算というWebGLの3つの重要な要素で構成されています。下のボタンから、このデモを動かしている実際のJavaScriptコードを確認できます。</p>
+
+            <div class="collapsible-code">
+                <button class="toggle-button">
+                    <span class="button-text">3D猫のコードを表示する</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="code-content" style="display: none;">
+                    <div class="code-cell">
+                        <pre><code id="webgl-demo-code-display">
+// この領域にwebgl-demo.jsのコードが表示されます。
+</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4>コードの要点解説</h4>
+                <h5>1. シェーダー（Shader）について</h5>
+                <p>GPU上で実行されるプログラム。<strong>頂点シェーダー</strong>がオブジェクトの形を、<strong>フラグメントシェーダー</strong>が色や質感を決定します。</p>
+                
+                <h5>2. バッファ（Buffer）について</h5>
+                <p>頂点の座標や色などのデータをGPUに送るためのメモリ領域です。</p>
+                
+                <h5>3. 行列（Matrix）について</h5>
+                <p>オブジェクトの拡大縮小・回転・移動（モデル行列）、カメラの位置（ビュー行列）、遠近感（投影行列）を計算するために使われます。これらを掛け合わせた**MVP行列**をシェーダーに送ることで、3D空間を2D画面に正しく表示します。</p>
+
+                <h5>4. アニメーションとインタラクション</h5>
+                <p>`requestAnimationFrame`で毎フレーム描画を更新し、アニメーションを実現しています。スライダーやカラーピッカーの値（回転速度、カメラ距離、色）は、シェーダーに送る「Uniform変数」や行列計算に使われ、リアルタイムに描画へ反映されます。</p>
+            </div>
+        </section>
+
+        <section id="time">
+            <div class="header-with-image">
+                <h1>製作時間</h1>
+            </div>
+            <h3>完成日</h3>
+            <p>2025年7月23日(水)</p>
+            <h3>総製作時間</h3>
+            <p>400分</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 WebGL体験型学習サイト</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="webgl-demo.js"></script>
+</body>
+</html>
